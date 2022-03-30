@@ -13,14 +13,17 @@ async function post_data(payload){
     }
     console.log("const payload=`" + JSON.stringify(payload) + "`")//This is primarily useful for troubleshooting. The data passed to Google App Script is sent to the console.
     //The request for Google App Script is formatted.
-    const reply = await fetch(gas_end_point, { 
-        method: "POST", 
+    const reply = await fetch(gas_end_point, {
+        method: "POST",
         body: JSON.stringify(payload),
+        headers:{
+            'Content-Type': 'text/plain;charset=utf-8',
+        }
     })
     //The request is made of Google App Script and the response is set to "response"
     const response = await reply.json()
     working(false)
-    console.log("in post data", response)     
+    console.log("in post data", response)
 
     if(response.cookie){// if respoonse has a cookie, set it
         for(const entry of response.cookie){
@@ -59,7 +62,7 @@ async function initialize_app(){
 
 
 function navigate(parameters, show_url=true, place_in_browser_history=true){
-    //update history so we can navigate backward.  
+    //update history so we can navigate backward.
     //update location so we can refresh and copy the URL.
     //any function called with navigate should build the whole canvas
 
@@ -96,9 +99,9 @@ function navigate(parameters, show_url=true, place_in_browser_history=true){
           fn(params.params)
         }else{
           fn(params)
-        }  
+        }
     }
-    
+
 }
 
 
@@ -107,12 +110,12 @@ function json_params_for_url(params){ // encode an object without the trailing e
     if(data.slice(-2)==="=="){
         return data.slice(0, -2)
     }
-    
+
     if(data.slice(-1)==="="){
         return data.slice(0, -1)
     }
-    
-    return data    
+
+    return data
 }
 
 async function submit_form(form){//this function is not used, but could be used to submit form data to google app script to update Airtable.
@@ -135,7 +138,7 @@ function form_data(html_tag,spin){
         console.log('html_tag',html_tag)
         html_tag=html_tag.parentElement
         if(html_tag.tagName==="BODY"){
-            throw 'Object submitted is not a form and us not contained in a form.'; 
+            throw 'Object submitted is not a form and us not contained in a form.';
         }
     }
 
@@ -172,17 +175,17 @@ function form_data(html_tag,spin){
 
 function url_parameters(){
     if(!location.search){
-        return {fn:"show_home"}  
+        return {fn:"show_home"}
     }else if(location.search.includes("=")){
         // normal pairs of parameters
         var pairs = location.search.slice(1).split('&');
-    
+
         var result = {};
         pairs.forEach(function(pair) {
             pair = pair.split('=');
             result[pair[0]] = decodeURIComponent(pair[1] || '');
         });
-    
+
         return JSON.parse(JSON.stringify(result));
     }else if(location.search){
         // this must be a base 64 encoded json object
@@ -215,14 +218,14 @@ function get_cookie(name) {//used to retrieve cookie by name
 function erase_cookie(name) {//used to delete a cookie by name
     console.log("at erase cookie", name)
     set_cookie(name,"deleted",-2)
-    //document.cookie = name+'=; Max-Age=-99999999;';  
+    //document.cookie = name+'=; Max-Age=-99999999;';
 }
 
 function build_menu(menu_data){
     current_menu.length=0 // reset the current menu
     const menu=[]
     const user_data=get_user_data() || []
-    
+
     menu.push('<div><i id="menu-close" class="fas fa-times" onclick="hide_menu()" style="cursor: pointer;"></i></div>  ')
     for(const item of menu_data){
         add_menu_item(menu, item, user_data.roles)
@@ -235,7 +238,7 @@ function add_menu_item(menu, menu_data, roles){//used to add a menu item
     if(menu_data.menu && !menu_data.label){
         // it must be an import of another menu
         for(const item of menu_data.menu){
-            add_menu_item(menu, item, roles) 
+            add_menu_item(menu, item, roles)
         }
         return
     }
@@ -257,7 +260,7 @@ function add_menu_item(menu, menu_data, roles){//used to add a menu item
     if(menu_data.menu){
         // it's a submenu
         let label=menu_data.label
-        
+
         if(typeof label==="function"){label=label()}
 
         menu.push(`<div class="menu-menu" onClick="toggle_sub_menu(this, 'menu-${menu_data.id}')"><i class="fas fa-chevron-down"></i>${label}</div><div class="sub-menu" id="menu-${menu_data.id}">`)
@@ -305,7 +308,7 @@ function toggle_sub_menu(button, id){//Used to expande and collapse submenus
     }
 }
 function working(status=true){//used to present a visual cue (spinning wheel) to show that the app is processing
-    try{  
+    try{
         if(status){
             tag("hamburger").className="fas fa-spinner fa-pulse"
             tag("menu-close").className="fas fa-spinner fa-pulse"
@@ -314,15 +317,15 @@ function working(status=true){//used to present a visual cue (spinning wheel) to
             tag("menu-close").className="fas fa-times"
         }
     }catch(e){
-        console.error(e)        
+        console.error(e)
     }
 }
 function toggle(tag_or_id,display="block"){
-    
-    
+
+
     let element=tag_or_id
     if(!element.tagName){
-        // assume caller passed in a tag id, as tag_or_id 
+        // assume caller passed in a tag id, as tag_or_id
         // does not have a tag name it cannot be a tag
         element=tag(tag_or_id)
     }
@@ -373,4 +376,3 @@ function intersect(string_or_array, array_or_string) {// returns the intersectio
     var setB = new Set(b);
     return [...new Set(a)].filter(x => setB.has(x));
 }
-
