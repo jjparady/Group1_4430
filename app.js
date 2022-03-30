@@ -1,17 +1,17 @@
 
-//gas project /apps/brookers/system 
+//gas project /apps/brookers/system
 //This global variable is set to contain the information needed to make a request of the Google App Script server.
 const gas_end_point = 'https://script.google.com/macros/s/'+gas_deployment_id()+'/exec'
 
-//This global variable defines the first two navigation items in the menu. In this app there are only two main navigation items "Home" and "Locations". These two menu items are visible regardless of login status.  
+//This global variable defines the first two navigation items in the menu. In this app there are only two main navigation items "Home" and "Locations". These two menu items are visible regardless of login status.
 const nav_menu=[
     //Note that a menu item is added by inserting an object for that menu item. The 'label' is the text that the user sees for that menu option. The function is the javascript function invoked when selecting that option. Here we insert the "home" and "locations" menu items. Both initiate a call to the navigate function which loads the appropriate page. The navigate function is used to help ensure smooth navigation. It allows the user to use the back botton in their browser when navigating between pages on the site (without navigating out ot the site). The navigate can accept parameters that can be passed to the function called by navigate.
     {label:"Home",function:"navigate({fn:'show_home'})"},
     {label:"Locations",function:"navigate({fn:'show_locations'})"},
-    
+
 ]
 
-//This global variable sets the menu items for an unautheticated user.  
+//This global variable sets the menu items for an unautheticated user.
 const unauthenticated_menu=[
     //The unautheticated user is presented with the "Home" and "Locations" (defined in the nav_menu global variable).
     {menu:nav_menu},
@@ -19,10 +19,10 @@ const unauthenticated_menu=[
     {},
     //The unauthenticated user is also presented with the "Login" and "Recover password" menu options.
     {label:"Login",function:"login()",home:"Login",panel:"login_panel"},
-    {label:"Recover Password",function:"recover_password()",panel:"recover"}, 
+    {label:"Recover Password",function:"recover_password()",panel:"recover"},
 ]
 
-//This global variable sets the menu items for an autheticated user.  
+//This global variable sets the menu items for an autheticated user.
 const authenticated_menu=[
     //The autheticated user is presented with the "Home" and "Locations" (defined in the nav_menu global variable).
     {menu:nav_menu},
@@ -39,18 +39,18 @@ const authenticated_menu=[
     {label:"Logout",function:"logout()", home:"Logout"},
     //This menu item builds a sub menu that provides the user with the functionality to request time off and see their requests
     {label:"Time Off",id:"menu1",menu:[
-        {label:"Request Time Off",function:"navigate({fn:'request_time_off'})"}, 
-        {label:"My Requests",function:"navigate({fn:'show_time_off'})"}, 
+        {label:"Request Time Off",function:"navigate({fn:'request_time_off'})"},
+        {label:"My Requests",function:"navigate({fn:'show_time_off'})"},
     ]},
     //This menu item allows the user to add additional users. Note the "roles" property of the object. Only users with the role of "manager", "owner", or "administrator" will see this menu item. User roles are not heirachical. All user types you wish to see a menu item must be listed in the elements of the array.
-    {label:"Add Employee",function:"navigate({fn:'create_account'})", roles:["manager","owner","administrator"]}, 
+    {label:"Add Student",function:"navigate({fn:'create_account'})", roles:["manager","owner","administrator"]},
     //This menu item adds the menu item for updating an inventory count. Notice how a parameter is passed to the "ice_cream_inventory" function
     {label:"Enter Ice Cream Inventory",home:"Inventory",function:"navigate({fn:'ice_cream_inventory',params:{style:'update'}})"},
     //the remaining menu items are added
     {label:"Ice Cream Inventory Summary",home:"Inventory",function:"navigate({fn:'ice_cream_inventory',params:{style:'summary'}})", roles:["owner","administrator"]},
-    {label:"Employee List",function:"navigate({fn:'employee_list'})"},
+    {label:"Student List",function:"navigate({fn:'employee_list'})"},
     {label:"Admin Tools",id:"menu2", roles:["manager","owner","administrator"], menu:[
-        {label:"Update User",function:"update_user()",panel:"update_user"},
+        {label:"Update Student",function:"update_user()",panel:"update_user"},
         {label:"Archive Inventory",function:"navigate({fn:'archive_inventory'})"},
     ]},
 
@@ -58,25 +58,25 @@ const authenticated_menu=[
 
 
 function show_home(){
-    
+
     //builds the menu for the home screen
     const menu=[]
-    //current_menu is a global variable that is built based on the set of menu items defined for users and their roles. 
+    //current_menu is a global variable that is built based on the set of menu items defined for users and their roles.
     for(item of current_menu){
         if(item.home){
             menu.push(`<a onClick="${item.function}">${item.home}</a>`)
         }
     }
 
-    //the main page is rendered with the Brooker's Ice cream logo. 
+    //the main page is rendered with the Brooker's Ice cream logo.
 
-    tag("canvas").innerHTML=` 
+    tag("canvas").innerHTML=`
     <div class="center-screen">
-    
+
     <p><img height="${window.innerHeight * .6}" src="images/uvu.jpg"></p>
     <div style="text-align:center"></div>
-    
-    
+
+
     </div>
     `
 
@@ -100,7 +100,7 @@ async function show_locations(){
 }
 
 async function request_time_off(){
-    //This is an example of embedding a data form that is created in Airtable. This form allows a user to make a "time off" request. This form is not secure. Anyone with the link or the id for the form can use it to enter data into Airtable. However, it is easy to build and share an Airtable form. 
+    //This is an example of embedding a data form that is created in Airtable. This form allows a user to make a "time off" request. This form is not secure. Anyone with the link or the id for the form can use it to enter data into Airtable. However, it is easy to build and share an Airtable form.
     if(!logged_in()){show_home();return}
     const airtable_object_id="shra7pqsxDNQzkh15"
     const width = 300
@@ -137,10 +137,10 @@ async function archive_inventory(){
             title:"Hang in there...",
             kind:"info"
         })
-    //We then invoke the "archive_inventory" function to process the archival of the old inventory counts. 
+    //We then invoke the "archive_inventory" function to process the archival of the old inventory counts.
     //Note: the post_data function is a generic function used to push data to Google App Script which will handle the process of posting data securely (which cannot be done solely on the client side all client side code is exposed in the browser). To use this function:
     //1- create an object (in this case params) that contains the information needed process the post. In this case, we just need to run the archive_inventory function. Notice how the function called is set in the "mode" property of the object
-    //2- create a variable to receive the results of calling the post_data function (which sends the request to google app script to actually post the data) 
+    //2- create a variable to receive the results of calling the post_data function (which sends the request to google app script to actually post the data)
     const params={mode:"archive_inventory"}
     const response=await post_data(params)
     //once the post is processed the initial message to the user that the process is running is removed and a new message is displayed to the user indicating the result of the post
@@ -157,11 +157,11 @@ async function archive_inventory(){
             message:response.message,
             title:"Data Error",
             kind:"error",
-            seconds:8    
+            seconds:8
         })
 
     }
-    
+
 }
 
 
@@ -177,20 +177,20 @@ async function ice_cream_inventory(params){
     //This function is set up recursively to build the page for working with inventory. The first time the function is called, the HTML shell is created for displaying either the inventory form for recording the count or the inventory report. Note that this will only be built if there is a "style" property set when the function is called. Once the shell is created, the function is called again to either built the form for recording an inventory count or create the summary report.
     if(params.style){
         //building the HTML shell
-        tag("canvas").innerHTML=` 
+        tag("canvas").innerHTML=`
             <div class="page">
                 <div id="inventory-title" style="text-align:center"><h2>Ice Cream Inventory</h2></div>
                 <div id="inventory-message" style="width:100%"></div>
                 <div id="inventory_panel"  style="width:100%">
                 </div>
-            </div>  
+            </div>
         `
         //loading user data. Any user can record an inventory count, so we don't need to check their role at this point. If a user is associated with more than one store and they wish to record an inventory count, they will be prompted to select the store they want to work with.
 
         const user_data = get_user_data()
         console.log ("user_data",user_data)
         if(user_data.store.length===1){
-            //If the user is associated with exactly 1 store, we call the get_inventory_list function again to populate the rest of the page with the data for that store. 
+            //If the user is associated with exactly 1 store, we call the get_inventory_list function again to populate the rest of the page with the data for that store.
             tag("inventory-message").innerHTML='<i class="fas fa-spinner fa-pulse"></i>'//this element is used to add a visual element (spinning wheel) to signify that the site is processing.
             //we call the get_inventory_list function (mode) filtered to show only "Ice Cream" (filter) - note that there are other inventory items - in the store associated with this user (store).
             ice_cream_inventory({
@@ -199,7 +199,7 @@ async function ice_cream_inventory(params){
                 store:user_data.store[0]
             })
         }else{
-            //We get here if the user is associated with more than 1 store. 
+            //We get here if the user is associated with more than 1 store.
           if(params.style==='summary'){
               //If the user wants to see a summary of the most recent count, we call the "get_inventory_list" function to populate the page with data from all of the stores that are associated with that user.
             tag("inventory-message").innerHTML='<i class="fas fa-spinner fa-pulse"></i>'
@@ -225,7 +225,7 @@ async function ice_cream_inventory(params){
           }
         }
 
-    }else if(params.store){    
+    }else if(params.store){
         //Notice that the first time through the store property is undefined and is set when the user data is loaded. Therefore this code will only process the second time through once the store property is set. During this pass, we determine whether to display the report of the last recorded inventory or display the form for recording a new inventory count.
         console.log("at ice_cream_inventory params=store")
         //we use a call to the "post_data" function to use Google App Script to retrieve the data needed to processs the form or the report
@@ -236,7 +236,7 @@ async function ice_cream_inventory(params){
 
 
         if(response.status==="success"){//If the data is retrieved successfully, we proceed.
-            
+
             if(response.report_style==='summary'){
             //If the style property is set to "summary", we build the report of the most recent count.
 
@@ -254,7 +254,7 @@ async function ice_cream_inventory(params){
                 for(const store of store_sequence){
                     header.push(`<th class="sticky">${store}</th>`)
 
-                }   
+                }
 
                 header.push(`<th class="sticky">Total</th>`)
                 header.push("</tr>")
@@ -276,10 +276,10 @@ async function ice_cream_inventory(params){
                     for(store of store_sequence){
                         target.push(`<td id="${record.id}|${stores[store]}"></td>`)
                     }
-                    //The totals will be calculated. The id is set to a combination of the flavor id and "total" so that the appropriate totals can be placed correctly in the table. 
+                    //The totals will be calculated. The id is set to a combination of the flavor id and "total" so that the appropriate totals can be placed correctly in the table.
                     target.push(`<td id="${record.id}|total"></td>`)
                     target.push("</tr>")
-                }     
+                }
 
                 //this adds a table for the "irregular" items that might be counted.
                 html.push("</table><br>")
@@ -302,7 +302,7 @@ async function ice_cream_inventory(params){
                             data[id]={quantity:record.fields.quantity,date:record.fields.date}
                         }
                     }
-    
+
                     // now fill the table with the most recent observations found for each flavor/store combination
                     for(const[key,value] of Object.entries(data)){
                         //create "boxes" for the store observations and totals of each flavor based on the identifiers already created for the individual cells (id's of the <td> tags)
@@ -320,10 +320,10 @@ async function ice_cream_inventory(params){
                         }else{
                             total_box.innerHTML=parseFloat(total_box.innerHTML)+value.quantity
                         }
-  
+
                     }
                 }
-                
+
             }else{
             //this is generating the form for updating inventory counts in an individual store
                 // keep track of navigation
@@ -340,7 +340,7 @@ async function ice_cream_inventory(params){
                     <th class="sticky" onclick="show_elements(['col-1','col-2','col-3'])">Flavor</th>
                     `]
                 let p=1 // map store ids to column numbers.  only needed for this loop then can be reused
-                
+
                 //add table headers for the "containers" (freezers) where inventory will be counted. Note that only the "Vineyard" location has a "Hardening Cabinet"
                 for(container of response.list.records[0].fields.container){
                     window.cols[p]=container
@@ -351,7 +351,7 @@ async function ice_cream_inventory(params){
                     }
                     console.log("container",container)
                     header.push(`<th onclick="hide_elements('col-${window.cols[container]}')" class="sticky col-${window.cols[container]}" >${cont}</th>`)
-                }     
+                }
                 header.push('<th class="sticky">Total</th></tr>')
                 html.push(header.join(""))
                 irregular=[]// ice cream not in regular category
@@ -373,9 +373,9 @@ async function ice_cream_inventory(params){
                     //build a text input in each cell. Use the combination of the flavor and container ids as the identifier of the input so that we can use it to update the correct record. When a value in the input is change (onchange), the update_observation function is called and passed the value and information needed (store, flavor, and container) to add the observation to the database. update_observation is a function in Amazon App Script.
                     for(container of record.fields.container){
                         target.push(`<td class="active col-${window.cols[container]}"><input id="${record.id}|${container.replace(/\s/g,"_")}" data-store="${params.store}" data-item_id="${record.id}" data-container="${container}" type="text" onchange="update_observation(this)"></td>`)
-                    }     
+                    }
                     target.push(`<td  class="inactive" id="${record.id}|total"></td></tr>`)//This sets the background color for items that have been updated to provide a visual cue that the element has been updated.
-                }     
+                }
                 html.push("</table>")
                 //add form to collect observations for the irregular items
                 html.push("<br>In this section, fill in only the rows corresponding to flavors you have on hand.")
@@ -432,17 +432,17 @@ async function ice_cream_inventory(params){
                     if (event.keyCode === 13) {
                       move_down(event.target);
                     }
-                });                
+                });
 
 
-                
 
-                
-            } 
+
+
+            }
         }else{//This executes if the data needed to create the form or report is not retrieved successfully. It is essentially an error message to the user.
             tag("inventory_panel").innerHTML="Unable to get inventory list: " + response.message + "."
         }
-    }  
+    }
 }
 
 function hide_elements(className){// adds the hidden class to all elements of the given class name
@@ -464,7 +464,7 @@ function show_elements(className){// remvoes the hidden class to all elements of
     }else{
         var classes=[className]
     }
-    
+
     for(const one_class of classes){
         for(const elem of document.getElementsByClassName(one_class)){
             elem.classList.remove("hidden")
@@ -474,7 +474,7 @@ function show_elements(className){// remvoes the hidden class to all elements of
 
 function add_buttons(row,col){
     //this function is used to create the input buttons for recording the inventory observations. Notice that we only use the options for case 3. We might use the other options in the future.
-    const box = tag(row + "|" + col.replace(/\s/g,"_"))    
+    const box = tag(row + "|" + col.replace(/\s/g,"_"))
     const container = box.parentElement
     switch(window.cols[col]){
         case 3:
@@ -527,7 +527,7 @@ function get_div_button(box,width,value,label){
     div.style.borderRadius="50%"
     div.style.color="lightgrey"
     div.innerHTML=label
-    
+
     return div
 }
 
@@ -547,7 +547,7 @@ function move_down(source){
     // aids in navigation. selects the next cell below when a value is updated
     const ids=source.id.split("|")
     ids[1]=ids[1].replace(/_/g," ")
-    
+
     let next_flavor=window.rows[window.rows[ids[0]]+1]
     let next_container=ids[1]
     if(!next_flavor){
@@ -583,7 +583,7 @@ async function update_observation(entry){
             message:"Please enter a number",
             title:"Data Error",
             kind:"error",
-            seconds:5    
+            seconds:5
         })
         entry.focus()
         entry.select()
@@ -602,16 +602,16 @@ async function update_observation(entry){
     //visually signal by modifying the appearance of the cell that the value is currently being updated.
     entry.parentElement.style.backgroundColor=null
     entry.parentElement.classList.add("working")
-    
+
     if(entry.dataset.obs_id){
         // there is already a record for this item.  update it
         params.mode="update_inventory_count"
         params.obs_id=entry.dataset.obs_id
         console.log("updating", params.obs_id)
         //use the post_data function to update the value (the update_inventory_count function in google app script is called and the appropriate flavor, store, container, and quantity information is passed)
-        const response=await post_data(params)    
+        const response=await post_data(params)
         console.log("update response", response)
-        
+
         if(response.status==="success"){//if the value is successfully updated, the appearance of the cell is changed to reflect the update.
             console.log("updated", flavor_total)
             tag(flavor_id + "|total").innerHTML = flavor_total(flavor_id)
@@ -626,7 +626,7 @@ async function update_observation(entry){
                 message:"Inventory Not Recorded: " + response.message,
                 title:"Data Error",
                 kind:"error",
-                seconds:5    
+                seconds:5
             })
             return false
         }
@@ -635,9 +635,9 @@ async function update_observation(entry){
         // there is no record for this item, insert it using the "insert_inventory_count" function in google app script
         params.mode="insert_inventory_count"
         console.log("inserting")
-        const response=await post_data(params)    
+        const response=await post_data(params)
         console.log("insert response", response)
-        
+
         if(response.status==="success"){//If it is inserted correctly, the appearance of the cell is changed to reflect the update.
             tag(flavor_id + "|total").innerHTML = flavor_total(flavor_id)
             entry.parentElement.classList.remove("working")
@@ -651,7 +651,7 @@ async function update_observation(entry){
                 message:"Inventory Not Recorded: " + response.message.message,
                 title:"Data Error",
                 kind:"error",
-                seconds:5    
+                seconds:5
             })
             }
             return false
@@ -665,7 +665,7 @@ async function employee_list(){
     if(!logged_in()){show_home();return}//in case followed a link after logging out
     hide_menu()
     //Build the HTML placeholders for the employee data.
-    tag("canvas").innerHTML=` 
+    tag("canvas").innerHTML=`
     <div class="page">
         <h2>Employee List</h2>
         <div id="member-list-message" style="padding-top:1rem;margin-bottom:1rem">
@@ -676,7 +676,7 @@ async function employee_list(){
         </div>
     </div>
     `
-    
+
     //retrieve the employee data using the local post_data function to request the Google App Script function "employee_list" retrieve the employee data.
     const response=await post_data({
         mode:"employee_list",
@@ -728,12 +728,11 @@ async function employee_list(){
             html.push("</tr>")
         }
         html.push("</table>")
-    
+
         tag("employee_list_panel").innerHTML=html.join("")
-    
+
     }else{
         tag("employee_list_panel").innerHTML="Unable to get member list: " + response.message + "."
-    }    
+    }
 
 }
-
