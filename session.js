@@ -24,7 +24,7 @@ async function login(params){
                     <input placeholder="Password" name="password" type="password"><br>
                     <input type="hidden" name="mode" value="login">
                     <button id="login_button" type="button" onclick="login(form_data(this,true))">Log In</button>
-                </form>        
+                </form>
             `
         }else{
             toggle(panel)
@@ -38,7 +38,7 @@ async function login(params){
                 title:"Login Failed",
                 message:"Email and password are both requied",
                 kind:"error",
-                seconds:5    
+                seconds:5
             })
             tag("login_button").innerHTML="Login"
             return
@@ -50,7 +50,7 @@ async function login(params){
                 title:"Login Failed",
                 message:"Email is not in expected format",
                 kind:"error",
-                seconds:5    
+                seconds:5
             })
             tag("login_button").innerHTML="Login"
             return
@@ -66,9 +66,9 @@ async function login(params){
                 title:"Login Failed",
                 message:"Either the email address or password was not recognized",
                 kind:"error",
-                seconds:5    
+                seconds:5
             })
-    
+
             tag("login_button").innerHTML="Login"
         }
     }
@@ -92,9 +92,9 @@ async function personal_data(params){
     if(!logged_in()){show_home();return}
     console.log("at personal data", params)
     hide_menu()
-    
+
     if(!params){ //no params sent.  Need to build the form container
-        tag("canvas").innerHTML=` 
+        tag("canvas").innerHTML=`
         <div class="page">
                         <h2>Modify Data</h2>
                 <div id="personal-data-message" style="width:170px;padding-top:1rem;margin-bottom:1rem">
@@ -104,7 +104,7 @@ async function personal_data(params){
         </div>
         `
         const panel=tag("personal_data_panel")
-      
+
         response = await post_data({  // getting the member data
             mode:"get_user_data"
         })
@@ -128,8 +128,8 @@ async function personal_data(params){
                     </select><br><br>
                     <input type="hidden" name="mode" value="update_user_data">
                     <button id="submit_button" type="button" onclick="personal_data(form_data(this,true))">Update</button>
-                </form>   
-            `    
+                </form>
+            `
 
             tag("1235").focus()
         }else{
@@ -137,10 +137,10 @@ async function personal_data(params){
                 title:"Server Failure",
                 message:"Error getting personal data: " + response.message,
                 kind:"error",
-                seconds:5    
+                seconds:5
             })
         }
-        
+
     }else if(params.button){
         if(params.button==='Update'){
             response = await post_data(params)
@@ -157,20 +157,20 @@ async function personal_data(params){
                     title:"Server Failure",
                     message:`Failed to update. ${response.message}`,
                     kind:"error",
-                    seconds:5    
+                    seconds:5
                 })
             }
         }
     }
-}    
+}
 
 async function create_account(params){
     if(!user_has_role(["owner","manager","administrator"])){show_home();return}
     const panel=tag("create_account_panel")
     hide_menu()
-    
-    if(!params){ 
-        tag("canvas").innerHTML=` 
+
+    if(!params){
+        tag("canvas").innerHTML=`
         <div class="page">
             <h2>New Employee</h2>
             <div id="create-account-message" style="width:170px;padding-top:1rem;margin-bottom:1rem">
@@ -195,13 +195,13 @@ async function create_account(params){
                 <input type="hidden" name="mode" value="verify_account">
                 <input type="hidden" name="email" value="${params.email}">
                 <button type="button" onclick="create_account(form_data(this,true))">Verify Account</button>
-                </form>   
-            `    
-                
+                </form>
+            `
+
 
             }else{
             tag("create-account-message").innerHTML="Account creation failed. " + response.message
-            tag("create_account_button").innerHTML="Create Account"    
+            tag("create_account_button").innerHTML="Create Account"
             }
         }else if (params.button==='Verify Account'){
             response = await post_data(params)
@@ -210,24 +210,24 @@ async function create_account(params){
                     title:"Account Verified",
                     message:"You are now logged in.",
                     seconds:3
-                })                
+                })
                 // might make a call back to server at this point
                 build_menu(authenticated_menu)
                 show_home()
-                
+
             }else{
                 message({
                     title:"Confirmation Failure",
                     message:`Failed to confirm account: ${response.message}`,
                     kind:"error",
-                    seconds:5    
-                })                
+                    seconds:5
+                })
             }
         }else{
             console.log("invalid process:", params.button)
         }
 
-    }else if(params.action==="show-form"){    
+    }else if(params.action==="show-form"){
         if(panel.innerHTML===""){
             panel.style.display="block"
             const html=[`
@@ -255,7 +255,7 @@ async function create_account(params){
                     <input type="hidden" name="mode" value="create">
                     <input type="hidden" name="confirm" value="${location.href.split("?")[0]}">
                     <button id="create_account_button" type="button" onclick="create_account(form_data(this,true))">Create Account</button>
-                </form>   
+                </form>
             `)
             panel.innerHTML=html.join("")
             tag("1234").focus()
@@ -263,11 +263,11 @@ async function create_account(params){
             toggle(panel)
         }
 }
-}    
+}
 
 async function confirm_account(params){
     // called by the link emailed to the user
-    
+
     response = await post_data({
         mode:"verify_account",
         email:params.email,
@@ -278,7 +278,7 @@ async function confirm_account(params){
             title:"Account Verified",
             message:"You are now logged in.",
             seconds:3
-        })          
+        })
         build_menu(authenticated_menu)
         navigate({fn:show_home})
     }else{
@@ -286,8 +286,8 @@ async function confirm_account(params){
             title:"Confirmation Failure",
             message:`Failed to confirm account: ${response.message}`,
             kind:"error",
-            seconds:5    
-        }) 
+            seconds:5
+        })
     }
 }
 
@@ -305,7 +305,7 @@ async function change_password(params){
                     <input placeholder="New Password" name="new_password" type="password"><br>
                     <input type="hidden" name="mode" value="change_password">
                     <button id="pw_button" type="button" onclick="change_password(form_data(this,true))">Change Password</button>
-                </form>        
+                </form>
             `
         }else{
             toggle(panel)
@@ -319,7 +319,7 @@ async function change_password(params){
                 title:"Login Failed",
                 message:"You must provide both the old password and the new password.",
                 kind:"error",
-                seconds:5    
+                seconds:5
             })
             tag("pw_button").innerHTML="Change Password"
             return
@@ -332,18 +332,18 @@ async function change_password(params){
                 title:"Success",
                 message:"Password Reset",
                 seconds:3
-            })            
+            })
         }else{
             message({
                 title:"Failure",
                 message:`Password not reset. ${response.message}`,
                 kind:"error",
-                seconds:5    
-            })            
+                seconds:5
+            })
         }
-    }    
+    }
 }
-  
+
 
 async function update_user(params,panel){
     if(!user_has_role(["owner","manager","administrator"])){show_home();return}
@@ -353,10 +353,10 @@ async function update_user(params,panel){
         const params={
             email:params,
             button:"Update User",
-            mode:"update_user"        
+            mode:"update_user"
         }
     }
-    
+
     if(!params){
         if(panel.innerHTML===""){
             panel.style.display="block"
@@ -365,7 +365,7 @@ async function update_user(params,panel){
                     <input placeholder="Email Address of User" name="email"><br>
                     <input type="hidden" name="mode" value="update_user">
                     <button id="update_user_button" type="button" onclick="update_user(form_data(this,true))">Update User</button>
-                </form>        
+                </form>
             `
         }else{
             toggle(panel)
@@ -378,7 +378,7 @@ async function update_user(params,panel){
                 title:"Email Error",
                 message:"You must provide the email of a user.",
                 kind:"error",
-                seconds:5    
+                seconds:5
             })
             tag("update_user_button").innerHTML="Update User"
             return
@@ -395,17 +395,17 @@ async function update_user(params,panel){
                 title:"Success",
                 message:"User updated.",
                 seconds:3
-            })            
+            })
         }else{
             message({
                 title:"User not updated",
                 message:response.message,
                 kind:"error",
-                seconds:5    
+                seconds:5
             })
         }
 
-    }    
+    }
 }
 
 async function recover_password(params){
@@ -420,7 +420,7 @@ async function recover_password(params){
                     <input type="hidden" name="mode" value="initiate_password_reset">
                     <input type="hidden" name="reset_link" value="${location.href.split("?")[0]}">
                     <button id="recover_password_button" type="button" onclick="recover_password(form_data(this,true))">Request Reset</button>
-                    </form>        
+                    </form>
             `
         }else{
             toggle(panel)
@@ -438,15 +438,15 @@ async function recover_password(params){
         <input type="hidden" name="code" value="${params.code}">
         <input type="hidden" name="mode" value="reset_password">
         <button id="recover_password_button" type="button" onclick="recover_password(form_data(this,true))">Reset Password</button>
-        </form>        
+        </form>
     `
     }else if(params.code ){
         //user is submitting  a code and a new password
-        
-        response = await post_data(params)        
+
+        response = await post_data(params)
         if(panel){
             panel.innerHTML=''
-            panel.style.display="none" 
+            panel.style.display="none"
         }
 
         if(response.status==="success"){
@@ -462,14 +462,14 @@ async function recover_password(params){
                 title:"Password not reset",
                 message:response.message,
                 kind:"error",
-                seconds:5    
-            })            
-        }            
+                seconds:5
+            })
+        }
 
     }else if(params.mode==="initiate_password_reset"){
         // user is  initiating a request
         response = await post_data(params)
-        
+
         if(response.status==="success"){
             message({
                 title:"Email Sent",
@@ -483,7 +483,7 @@ async function recover_password(params){
             <input type="hidden" name="email" value="${params.email}">
             <input type="hidden" name="mode" value="reset_password">
             <button id="recover_password_button" type="button" onclick="recover_password(form_data(this,true))">Reset Password</button>
-            </form>        
+            </form>
         `
         }else{
             tag("recover_password_button").innerHTML="Request Reset"
@@ -491,11 +491,11 @@ async function recover_password(params){
                 title:"Server Failure",
                 message:`Email not recognized`,
                 kind:"error",
-                seconds:5    
+                seconds:5
             })
-            
+
         }
-    }    
+    }
 }
 
 
@@ -512,7 +512,7 @@ function message(params){
     if(!params.title){params.title="Message"}
     if(!params.seconds){params.seconds=0}
 
-    
+
     let message_class="msg-head"
     if(params.kind==="error"){
         message_class += " error"
@@ -555,7 +555,7 @@ function user_has_role(array_of_permitted_roles){
             return intersect(get_user_data().roles,[array_of_permitted_roles]).length>0
         }else{
             return intersect(get_user_data().roles,array_of_permitted_roles).length>0
-        }   
+        }
     }else{
         // no roles specified, just need to be logged in
         return !!get_cookie("auth")
