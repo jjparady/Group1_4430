@@ -765,10 +765,8 @@ async function show_task_list(){
     const header=[`
     <table>
     <tr>
-    <th>Task Type</th>
+    <th>Task</th>
     `]
-    header.push(`<th>Rotation Category</th>`)
-    header.push(`<th>Task Description</th>`)
     header.push(`<th>Completed</th>`)
     header.push(`<th>Change</th>`)
     header.push("</tr>")
@@ -778,15 +776,11 @@ async function show_task_list(){
     //add a new table row to the table for each flavor
     html.push("<tr>")
     //insert the task description
-    html.push(`<td>${record.fields.task_type}</td>`)
-    //insert the task description
-    html.push(`<td>${record.fields.rotation_category}</td>`)
-    //insert the task description
-    html.push(`<td>${record.fields.task_description}</td>`)
+    html.push(`<td>${record.fields.Name}</td>`)
     //Insert the status of the task
-    html.push(`<td align='center'>${record.fields.completed}</td>`)
+    html.push(`<td align='center'>${record.fields.Completed}</td>`)
     if(record.fields.Completed==='No'){
-    html.push(`<td><a class="tools" onclick="mark_task_complete({id:'${record.id}', task_type:'${record.fields.task_type}', rotation_category:'${record.fields.rotation_category}', task_description:'${record.fields.task_description}'})">Mark as Completed</a></td>`)
+    html.push(`<td><a class="tools" onclick="mark_task_complete({id:'${record.id}', name:'${record.fields.Name}'})">Mark as Completed</a></td>`)
     }
     html.push("</tr>")
     }
@@ -798,7 +792,7 @@ async function show_task_list(){
     
     async function mark_task_complete(params){
     console.log('in mark_task_complete')
-    payload = {mode:"mark_task_complete", id:params.id, task_type:params.task_type, rotation_category:params.rotation_category, task_description:params.task_description}
+    payload = {mode:"mark_task_complete", id:params.id, name:params.name}
     const response=await post_data(payload)
     show_task_list()
     
