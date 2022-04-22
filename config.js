@@ -1,5 +1,5 @@
 //This function is used to point the client-side code to the Google App Script server that handles data requests. Every time the code in Google App Script is modified, the server must be deployed again. When that happens the code returned by the function must be updated.
 
 function gas_deployment_id(){return(
-'AKfycbziOprFHz5AViLjfYZf4LBl3zJfs7Bp9CQ_w8rOH0aKBotVCEcMJTzX1e2Oj7ab6cdV-A'
+'AKfycbzNA79Zaxswp5lVxQ2y3MKM-DThJA8RBjVlD3b4tbIIRjbYIRF5Y64FoaeL7UCR_pDNrg'
 )}
