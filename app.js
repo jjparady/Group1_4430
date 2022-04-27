@@ -783,7 +783,7 @@ async function show_task_list_behavioral(){
     //Insert the status of the task
     html.push(`<td align='center'>${record.fields.Completed}</td>`)
     if(record.fields.Completed==='No'){
-    html.push(`<td><a class="tools" onclick="mark_task_complete({id:'${record.id}', name:'${record.fields.Name}'})">Mark as Completed</a></td>`)
+    html.push(`<td><a class="tools" onclick="mark_task_complete_behavioral({id:'${record.id}', name:'${record.fields.Name}'})">Mark as Completed</a></td>`)
     }
     html.push("</tr>")
     }
@@ -844,7 +844,7 @@ async function show_task_list_behavioral(){
         //Insert the status of the task
         html.push(`<td align='center'>${record.fields.Completed}</td>`)
         if(record.fields.Completed==='No'){
-        html.push(`<td><a class="tools" onclick="mark_task_complete({id:'${record.id}', name:'${record.fields.Name}'})">Mark as Completed</a></td>`)
+        html.push(`<td><a class="tools" onclick="mark_task_complete_family({id:'${record.id}', name:'${record.fields.Name}'})">Mark as Completed</a></td>`)
         }
         html.push("</tr>")
         }
@@ -902,7 +902,7 @@ async function show_task_list_behavioral(){
             //Insert the status of the task
             html.push(`<td align='center'>${record.fields.Completed}</td>`)
             if(record.fields.Completed==='No'){
-            html.push(`<td><a class="tools" onclick="mark_task_complete({id:'${record.id}', name:'${record.fields.Name}'})">Mark as Completed</a></td>`)
+            html.push(`<td><a class="tools" onclick="mark_task_complete_pediatrics({id:'${record.id}', name:'${record.fields.Name}'})">Mark as Completed</a></td>`)
             }
             html.push("</tr>")
             }
@@ -918,7 +918,8 @@ async function show_task_list_behavioral(){
             const response=await post_data(payload)
             show_task_list()
             
-            }async function show_task_list_women(){
+            }
+            async function show_task_list_women(){
                 if(!logged_in()){show_home();return}//in case followed a link after logging out. This prevents the user from using this feature when they are not authenticated.
                 
                 //First we hide the menu
@@ -960,7 +961,7 @@ async function show_task_list_behavioral(){
                 //Insert the status of the task
                 html.push(`<td align='center'>${record.fields.Completed}</td>`)
                 if(record.fields.Completed==='No'){
-                html.push(`<td><a class="tools" onclick="mark_task_complete({id:'${record.id}', name:'${record.fields.Name}'})">Mark as Completed</a></td>`)
+                html.push(`<td><a class="tools" onclick="mark_task_complete_women({id:'${record.id}', name:'${record.fields.Name}'})">Mark as Completed</a></td>`)
                 }
                 html.push("</tr>")
                 }
