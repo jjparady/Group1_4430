@@ -53,7 +53,10 @@ const authenticated_menu=[
         {label:"Update Student",function:"update_user()",panel:"update_user"},
         {label:"Archive Inventory",function:"navigate({fn:'archive_inventory'})"},
     ]},
-    {label:"Task List",function:"navigate({fn:'show_task_list'})"},
+    {label:"Behavioral Tasks",function:"navigate({fn:'show_task_list_behavioral'})"},
+    {label:"Family Medicine 1 Tasks",function:"navigate({fn:'show_task_list_family'})"},
+    {label:"Pediatrics Tasks",function:"navigate({fn:'show_task_list_pediatrics'})"},
+    {label:"Women's Health Tasks",function:"navigate({fn:'show_task_list_women'})"},
 
 ]
 
@@ -738,7 +741,7 @@ async function employee_list(){
 
 }
 
-async function show_task_list(){
+async function show_task_list_behavioral(){
     if(!logged_in()){show_home();return}//in case followed a link after logging out. This prevents the user from using this feature when they are not authenticated.
     
     //First we hide the menu
@@ -748,14 +751,14 @@ async function show_task_list(){
     //building the HTML shell
     tag("canvas").innerHTML=`
     <div class="page">
-    <div id="task-title" style="text-align:center"><h2>Store Tasks</h2></div>
+    <div id="task-title" style="text-align:center"><h2>Behavioral Health</h2></div>
     <div id="task-message" style="width:100%"></div>
     <div id="task_panel" style="width:100%">
     </div>
     </div>
     `
     //get the data from airtable through google apps script
-    const params = {mode: "get_task_list",filter: ""}
+    const params = {mode: "get_task_list_behavioral",filter: ""}
     console.log('params',params)
     
     let response=await post_data(params)
@@ -790,11 +793,189 @@ async function show_task_list(){
     
     }
     
-    async function mark_task_complete(params){
+    async function mark_task_complete_behavioral(params){
     console.log('in mark_task_complete')
-    payload = {mode:"mark_task_complete", id:params.id, name:params.name}
+    payload = {mode:"mark_task_complete_behavioral", id:params.id, name:params.name}
     const response=await post_data(payload)
     show_task_list()
     
     }
+
+
+    async function show_task_list_family(){
+        if(!logged_in()){show_home();return}//in case followed a link after logging out. This prevents the user from using this feature when they are not authenticated.
+        
+        //First we hide the menu
+        hide_menu()
+        console.log('at show_task_list.')
+        
+        //building the HTML shell
+        tag("canvas").innerHTML=`
+        <div class="page">
+        <div id="task-title" style="text-align:center"><h2>Family Medicne 1</h2></div>
+        <div id="task-message" style="width:100%"></div>
+        <div id="task_panel" style="width:100%">
+        </div>
+        </div>
+        `
+        //get the data from airtable through google apps script
+        const params = {mode: "get_task_list_family",filter: ""}
+        console.log('params',params)
+        
+        let response=await post_data(params)
+        console.log('response',response)
+        
+        //Build the table to display the report. The columns of the table are: Flavor, the stores available to the user, and the total inventory. Since only the owner is given the option to view inventory counts (see the autheticated_user global variable), all stores will be shown in the report.
+        const header=[`
+        <table>
+        <tr>
+        <th>Task</th>
+        `]
+        header.push(`<th>Completed</th>`)
+        header.push(`<th>Change</th>`)
+        header.push("</tr>")
+        const html=[header.join("")]
+        
+        for(record of response.task_list){
+        //add a new table row to the table for each flavor
+        html.push("<tr>")
+        //insert the task description
+        html.push(`<td>${record.fields.Name}</td>`)
+        //Insert the status of the task
+        html.push(`<td align='center'>${record.fields.Completed}</td>`)
+        if(record.fields.Completed==='No'){
+        html.push(`<td><a class="tools" onclick="mark_task_complete({id:'${record.id}', name:'${record.fields.Name}'})">Mark as Completed</a></td>`)
+        }
+        html.push("</tr>")
+        }
+        
+        html.push("</table>")
+        tag("task_panel").innerHTML=html.join("")
+        
+        }
+        
+        async function mark_task_complete_family(params){
+        console.log('in mark_task_complete')
+        payload = {mode:"mark_task_complete_family", id:params.id, name:params.name}
+        const response=await post_data(payload)
+        show_task_list()
+        
+        }async function show_task_list_pediatrics(){
+            if(!logged_in()){show_home();return}//in case followed a link after logging out. This prevents the user from using this feature when they are not authenticated.
+            
+            //First we hide the menu
+            hide_menu()
+            console.log('at show_task_list.')
+            
+            //building the HTML shell
+            tag("canvas").innerHTML=`
+            <div class="page">
+            <div id="task-title" style="text-align:center"><h2>Pediatrics</h2></div>
+            <div id="task-message" style="width:100%"></div>
+            <div id="task_panel" style="width:100%">
+            </div>
+            </div>
+            `
+            //get the data from airtable through google apps script
+            const params = {mode: "get_task_list_pediatrics",filter: ""}
+            console.log('params',params)
+            
+            let response=await post_data(params)
+            console.log('response',response)
+            
+            //Build the table to display the report. The columns of the table are: Flavor, the stores available to the user, and the total inventory. Since only the owner is given the option to view inventory counts (see the autheticated_user global variable), all stores will be shown in the report.
+            const header=[`
+            <table>
+            <tr>
+            <th>Task</th>
+            `]
+            header.push(`<th>Completed</th>`)
+            header.push(`<th>Change</th>`)
+            header.push("</tr>")
+            const html=[header.join("")]
+            
+            for(record of response.task_list){
+            //add a new table row to the table for each flavor
+            html.push("<tr>")
+            //insert the task description
+            html.push(`<td>${record.fields.Name}</td>`)
+            //Insert the status of the task
+            html.push(`<td align='center'>${record.fields.Completed}</td>`)
+            if(record.fields.Completed==='No'){
+            html.push(`<td><a class="tools" onclick="mark_task_complete({id:'${record.id}', name:'${record.fields.Name}'})">Mark as Completed</a></td>`)
+            }
+            html.push("</tr>")
+            }
+            
+            html.push("</table>")
+            tag("task_panel").innerHTML=html.join("")
+            
+            }
+            
+            async function mark_task_complete_pediatrics(params){
+            console.log('in mark_task_complete')
+            payload = {mode:"mark_task_complete_pediatrics", id:params.id, name:params.name}
+            const response=await post_data(payload)
+            show_task_list()
+            
+            }async function show_task_list_women(){
+                if(!logged_in()){show_home();return}//in case followed a link after logging out. This prevents the user from using this feature when they are not authenticated.
+                
+                //First we hide the menu
+                hide_menu()
+                console.log('at show_task_list.')
+                
+                //building the HTML shell
+                tag("canvas").innerHTML=`
+                <div class="page">
+                <div id="task-title" style="text-align:center"><h2>Women's Health</h2></div>
+                <div id="task-message" style="width:100%"></div>
+                <div id="task_panel" style="width:100%">
+                </div>
+                </div>
+                `
+                //get the data from airtable through google apps script
+                const params = {mode: "get_task_list_women",filter: ""}
+                console.log('params',params)
+                
+                let response=await post_data(params)
+                console.log('response',response)
+                
+                //Build the table to display the report. The columns of the table are: Flavor, the stores available to the user, and the total inventory. Since only the owner is given the option to view inventory counts (see the autheticated_user global variable), all stores will be shown in the report.
+                const header=[`
+                <table>
+                <tr>
+                <th>Task</th>
+                `]
+                header.push(`<th>Completed</th>`)
+                header.push(`<th>Change</th>`)
+                header.push("</tr>")
+                const html=[header.join("")]
+                
+                for(record of response.task_list){
+                //add a new table row to the table for each flavor
+                html.push("<tr>")
+                //insert the task description
+                html.push(`<td>${record.fields.Name}</td>`)
+                //Insert the status of the task
+                html.push(`<td align='center'>${record.fields.Completed}</td>`)
+                if(record.fields.Completed==='No'){
+                html.push(`<td><a class="tools" onclick="mark_task_complete({id:'${record.id}', name:'${record.fields.Name}'})">Mark as Completed</a></td>`)
+                }
+                html.push("</tr>")
+                }
+                
+                html.push("</table>")
+                tag("task_panel").innerHTML=html.join("")
+                
+                }
+                
+                async function mark_task_complete_women(params){
+                console.log('in mark_task_complete')
+                payload = {mode:"mark_task_complete_women", id:params.id, name:params.name}
+                const response=await post_data(payload)
+                show_task_list()
+                
+                }
+
     
