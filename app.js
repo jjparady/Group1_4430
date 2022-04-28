@@ -797,7 +797,7 @@ async function show_task_list_behavioral(){
     console.log('in mark_task_complete')
     payload = {mode:"mark_task_complete_behavioral", id:params.id, name:params.name}
     const response=await post_data(payload)
-    show_task_list()
+    show_task_list_behavioral()
     
     }
 
@@ -858,7 +858,7 @@ async function show_task_list_behavioral(){
         console.log('in mark_task_complete')
         payload = {mode:"mark_task_complete_family", id:params.id, name:params.name}
         const response=await post_data(payload)
-        show_task_list()
+        show_task_list_family()
         
         }async function show_task_list_pediatrics(){
             if(!logged_in()){show_home();return}//in case followed a link after logging out. This prevents the user from using this feature when they are not authenticated.
@@ -916,7 +916,7 @@ async function show_task_list_behavioral(){
             console.log('in mark_task_complete')
             payload = {mode:"mark_task_complete_pediatrics", id:params.id, name:params.name}
             const response=await post_data(payload)
-            show_task_list()
+            show_task_list_pediatrics()
             
             }
             async function show_task_list_women(){
@@ -975,7 +975,7 @@ async function show_task_list_behavioral(){
                 console.log('in mark_task_complete')
                 payload = {mode:"mark_task_complete_women", id:params.id, name:params.name}
                 const response=await post_data(payload)
-                show_task_list()
+                show_task_list_women()
                 
                 }
 
