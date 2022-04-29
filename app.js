@@ -662,8 +662,60 @@ async function update_observation(entry){
     }
 }
 
-
 async function employee_list(){
+    if(!logged_in()){show_home();return}//in case followed a link after logging out. This prevents the user from using this feature when they are not authenticated.
+    
+    //First we hide the menu
+    hide_menu()
+    console.log('at show_task_list.')
+    
+    //building the HTML shell
+    tag("canvas").innerHTML=`
+    <div class="page">
+    <div id="task-title" style="text-align:center"><h2>Student Table</h2></div>
+    <div id="task-message" style="width:100%"></div>
+    <div id="task_panel" style="width:100%">
+    </div>
+    </div>
+    `
+    //get the data from airtable through google apps script
+    const params = {mode: "employee_list",filter: ""}
+    console.log('params',params)
+    
+    let response=await post_data(params)
+    console.log('response',response)
+    
+    //Build the table to display the report. The columns of the table are: Flavor, the stores available to the user, and the total inventory. Since only the owner is given the option to view inventory counts (see the autheticated_user global variable), all stores will be shown in the report.
+    const header=[`
+    <table>
+    <tr>
+    <th>Task</th>
+    `]
+    header.push(`<th>First Name</th>`)
+    header.push(`<th>Last Name</th>`)
+    header.push(`<th>Email</th>`)
+    header.push(`<th>Phone</th>`)
+    header.push("</tr>")
+    const html=[header.join("")]
+    
+    for(record of response.task_list){
+    //add a new table row to the table for each flavor
+    html.push("<tr>")
+    //insert the task description
+    html.push(`<td>${record.fields.Name}</td>`)
+    //Insert the status of the task
+    html.push(`<td align='center'>${record.fields.Completed}</td>`)
+    if(record.fields.Completed==='No'){
+    html.push(`<td><a class="tools" onclick="mark_task_complete_behavioral({id:'${record.id}', name:'${record.fields.Name}'})">Mark as Completed</a></td>`)
+    }
+    html.push("</tr>")
+    }
+    
+    html.push("</table>")
+    tag("task_panel").innerHTML=html.join("")
+    
+    }
+/*async function employee_list(){
     //this function displays an employee list. If the user role allows, the option to update the user record in Google App Script is presented
     //Note: user information is stored in Airtable. However, to avoid the need to repeatedly access Airtable to retrieve user information, a record is stored in Google App Script. This record must be updated when changes are made to user information in Airtable, thus the need for user information to be updated.
     if(!logged_in()){show_home();return}//in case followed a link after logging out
@@ -739,7 +791,7 @@ async function employee_list(){
         tag("employee_list_panel").innerHTML="Unable to get member list: " + response.message + "."
     }
 
-}
+}*/
 
 async function show_task_list_behavioral(){
     if(!logged_in()){show_home();return}//in case followed a link after logging out. This prevents the user from using this feature when they are not authenticated.
