@@ -689,11 +689,13 @@ async function employee_list(){
     const header=[`
     <table>
     <tr>
-    <th>Task</th>
+    <th>First Name</th>
     `]
-    header.push(`<th>First Name</th>`)
+    header.push("</tr>")
     header.push(`<th>Last Name</th>`)
+    header.push("</tr>")
     header.push(`<th>Email</th>`)
+    header.push("</tr>")
     header.push(`<th>Phone</th>`)
     header.push("</tr>")
     const html=[header.join("")]
@@ -702,9 +704,11 @@ async function employee_list(){
     //add a new table row to the table for each flavor
     html.push("<tr>")
     //insert the task description
-    html.push(`<td>${record.fields.Name}</td>`)
+    html.push(`<td>${record.fields.first_name}</td>`)
     //Insert the status of the task
-    html.push(`<td align='center'>${record.fields.Completed}</td>`)
+    html.push(`<td>${record.fields.last_name}</td>`)
+    html.push(`<td>${record.fields.email}</td>`)
+    html.push(`<td>${record.fields.phone}</td>`)
     if(record.fields.Completed==='No'){
     html.push(`<td><a class="tools" onclick="mark_task_complete_behavioral({id:'${record.id}', name:'${record.fields.Name}'})">Mark as Completed</a></td>`)
     }
